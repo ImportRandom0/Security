@@ -1,0 +1,244 @@
+import random
+import math
+import string
+
+CompStorage = []
+Done = ["local OOO00OOO0OOOO00 = 2"]
+GarbageVars = ["OOO00OOO0OOOO00"]
+TemporaryGarbage = []
+Order = []
+FinalString = ""
+#Storage
+
+Mainfix = input("What is the prefix? example: Cr ")
+Input = input("What string would you like encoded? ")
+Difficulty = int(input("What is the level of security "))
+#Inputs
+
+Done.append(f"{Mainfix}=setmetatable(  {{r=2587419368106,16}},  {{__newindex=function({Mainfix},Kr,Vr)rawset({Mainfix},Kr,Vr)end}})")
+
+def locate_all(String, Type):
+  Results = []
+  for i in reversed(range(len(String))):
+    if String[i] == Type:
+      Results.append(i)
+  return Results
+
+
+#Helps locate all characters in a string
+
+
+def create_equation(n):
+  FirstD = random.randint(2, 9)
+  Temp = random.randint(1, 9)
+  Thing = f"({n/FirstD}*({n/2}*{Temp}+math.sqrt({n*Temp/2})+{n*2+1}))/{n/FirstD}-({n/2}*{Temp}+math.sqrt({n*Temp/2})+{n*2+1-n}) "
+  return Thing
+
+
+#Allows for secure number storage
+
+
+def GenName():
+  Final = ""
+  Pos = ["O", "0"]
+  for i in range(20):
+    if i == 0:
+      Final = Final + "O"
+    else:
+      Final = Final + random.choice(Pos)
+  return Final
+
+
+#Allows for secure variable names
+
+
+def CheckIniti(Name):  # allows you to check if a pre is initiated
+  for i in range(len(CompStorage)):
+    if CompStorage[i][1] == Name:
+      return CompStorage[i][2]
+
+
+#Here we start with defining possabilities for boiler code
+def RunPos(Fill):
+  ForWhile = GenName()
+  ForLoadstring = GenName()
+  ForFunction = GenName()
+  ForRepeat = GenName()
+  While = random.choice(GarbageVars)
+  WhileName = GenName()
+
+  TemporaryVar1 = f"{Mainfix}.{GenName()} = {random.randint(1,127)}"
+  TemporaryVar2 = f"{Mainfix}.{GenName()} = {random.randint(1,127)}"
+
+  TemporaryVar3 = f"{Mainfix}.{GenName()} = {create_equation(random.randint(1,127))}"
+  TemporaryVar4 = f"{Mainfix}.{GenName()} = {create_equation(random.randint(1,127))}"
+
+  TemporaryVar5 = f"{Mainfix}.{GenName()} = \"\""
+  Fix1 = " + "
+  TemporaryVar6 = f"{Mainfix}.{GenName()} = \"\""
+  RunsPossible = [
+    f"for {GenName()}=0, {random.choice(GarbageVars)} do {Fill} break end",
+    f"local {WhileName} = {While + Fix1 + str(random.randint(130,200))} while {While} < {WhileName} do {While} = {random.randint(1,127)} {Fill} {While} = {While} + {WhileName} end",  #Change value of the variable that while loop is compaing to so that it does not break
+    f"if {random.choice(GarbageVars)} < {random.randint(128,400)} then {Fill} end",
+    f"do {Fill} end",
+    f"{TemporaryVar1} {Fill} {TemporaryVar2}",
+    f"local function {ForLoadstring}() loadstring((string.gsub(({Mainfix}.{GenName()}:gsub(\"%d+\", string.char)), \"/\", \"\"))) end if pcall({ForLoadstring}) then else {Fill} end",
+    f"local function {ForFunction}() {Fill} end {ForFunction}()",
+    f"{TemporaryVar3} {Fill} {TemporaryVar4}",
+    f"local {ForRepeat} = 0 repeat {Fill} {ForRepeat} = {ForRepeat} + 1 until {ForRepeat} == 1"
+  ]
+  TheNum = random.randint(0, len(RunsPossible) - 1)
+  TheChoice = RunsPossible[TheNum]
+  if TheNum == 4:
+    TemporaryGarbage.append(TemporaryVar1[0:23 + len(Mainfix) - 2])
+    TemporaryGarbage.append(TemporaryVar2[0:23 + len(Mainfix) - 2])
+  if TheNum == 7:
+    TemporaryGarbage.append(TemporaryVar3[0:23 + len(Mainfix) - 2])
+    TemporaryGarbage.append(TemporaryVar4[0:23 + len(Mainfix) - 2])
+  return TheChoice
+
+
+#wrap your meaning in garbage
+def wrapper(ToWrap, WrapAmo):
+  Final = ""
+  Temporary = ToWrap
+  for i in range(WrapAmo):
+    Temporary = RunPos(Temporary)
+
+  for i in TemporaryGarbage:
+    GarbageVars.append(i)
+  for i in TemporaryGarbage:
+    i = None
+
+  Final = Temporary
+  Done.append(Final)
+
+
+#validates the comp data sheet
+for i in range(len(Input)):
+  GeneratedForComp = GenName()
+  CompStorage.append([
+    False, f"{Mainfix}.{GeneratedForComp}", False,
+    f"{Mainfix}.{GeneratedForComp} = {ord(Input[i])}"
+  ])
+  Order.append(f"{Mainfix}.{GeneratedForComp}")
+
+  #allows program to find next in required string generation
+
+
+  def AllDone():
+    #check if store is all done to make while work
+    IsDone = True
+    for i in range(len(CompStorage)):
+      if CompStorage[i][0] == False or CompStorage[i][2] == False:
+        IsDone = False
+    return IsDone
+
+#intiate gooberside for creating order of cont
+Gooberside = []
+for i in CompStorage:
+  Gooberside.append(i[1])
+
+#print(Gooberside)
+ToPop = []
+TotalSteps = []
+LastRunFirst = 0
+Slasher1 = f"{Mainfix}.{GenName()} = \'/\'"
+Slasher = Slasher1[0:len(Mainfix)+21]
+TotalSteps.append(Slasher1)
+Counter = len(Gooberside)
+while Counter > 1:
+  if len(Gooberside) % 2 == 0:
+    for i in range(0, len(Gooberside)-1, 2):
+      Goobaclobba = GenName()
+      TotalSteps.append(f"{Mainfix}.{Goobaclobba} = {Gooberside[i]}..{Slasher}..{Gooberside[i+1]}")
+      Gooberside[i] = f"{Mainfix}.{Goobaclobba}"
+      LastRunFirst = f"{Mainfix}.{Goobaclobba}"
+      ToPop.append(i+1)
+    for i in reversed(ToPop):
+      Gooberside.pop(i)
+  else:
+    for i in range(0, len(Gooberside), 2):
+      if i == len(Gooberside)-1:
+        Goobaclobba = GenName()
+        TotalSteps.append(f"{Mainfix}.{Goobaclobba} = {Gooberside[i]}")
+        Gooberside[i] = f"{Mainfix}.{Goobaclobba}"
+        LastRunFirst = f"{Mainfix}.{Goobaclobba}"
+      else:
+        Goobaclobba = GenName()
+        TotalSteps.append(f"{Mainfix}.{Goobaclobba} = {Gooberside[i]}..{Slasher}..{Gooberside[i+1]}")
+        Gooberside[i] = f"{Mainfix}.{Goobaclobba}"
+        LastRunFirst = f"{Mainfix}.{Goobaclobba}"
+        ToPop.append(i+1)
+    for i in reversed(ToPop):
+      Gooberside.pop(i)
+  Counter = len(Gooberside)
+  ToPop = []
+
+ForLoadstring = GenName()
+TotalSteps.append(f"local function {ForLoadstring}() loadstring(game:HttpGet(string.gsub(({LastRunFirst}:gsub(\"%d+\", string.char)), \"/\", \"\"))) end if pcall({ForLoadstring}) then end")
+TotalSteps.append(f"{LastRunFirst} = {random.randint(1, 125)}")
+#this mess will generate steps to contcantanate characters into coherant strings throughout process
+
+#start iterating through comp sheet to coplete the initilization of code
+
+import re
+def has_numbers(inputString):
+    return bool(re.search(r'\d', inputString))
+
+Counter = 0
+Runnig = True
+while Runnig:
+  Chance = random.randint(1, Difficulty)
+  i = CompStorage[Counter]
+  if i[2] == False:
+    wrapper(i[3],  random.randint(1, Difficulty))
+    Counter = Counter + 1
+    if Counter == len(CompStorage):
+      Counter = 0
+      break
+
+for i in TotalSteps:
+  Chance = random.randint(1, Difficulty)
+  if Chance == 1:
+    wrapper(i, random.randint(1, Difficulty))
+  else:
+    Chance2 = random.randint(1, 2)
+    if Chance2 == 1:
+      pass
+      wrapper(random.choice(GarbageVars), Difficulty)
+    else:
+      wrapper(f"{Mainfix}.{GenName()} = {random.choice(GarbageVars)}..{Slasher}..{random.choice(GarbageVars)}", Difficulty)
+#not stating all variables causing contcantination errors
+
+FinishStack = ""
+for i in Done:
+  FinishStack = FinishStack + " " + i
+print(FinishStack)
+
+print(TotalSteps)
+
+#[Explenation]
+#The purpose of this program is for loadstring encryption, a secure way to allow
+#others to run your raw code without them being able to read your raw code.
+
+#[Use cases]
+#This program is to be used for encrypting LuaU code for Roblox developers.
+#I do not condone any use of this program with malicious intent.
+
+#[How To Use]
+#To use this program start by running it, then declare a MainVariable for metatable,
+#this can be any string of text (with no spaces or numbers)
+
+#When completed then enter a density, this controls how difficult the code is to decrypt.
+
+#Finally, you can run the outputted code in any luaU executor or program. Be warned, as 
+#too high of a density can lead to preformance issues.
+#[Why use this?]
+
+#loadstring encryption is a performance light way of encryption as it encrypts a string
+#rather then the code itself, meaning all encryption only effects initial proformace and
+#does not effect the program once it has started.
+
+#[Credits]
+#This program was completely written by ImportRandom0
